@@ -8,6 +8,7 @@ import schema from "./graphql/schema";
 import resolvers, { ExpanedError } from './graphql/resolvers';
 import mongoose from "mongoose";
 import useAuth from "./middleware/auth";
+import postRouter from './routes/post';
 
 
 const app: Express = express();
@@ -38,6 +39,10 @@ app.use('/graphql', graphqlHTTP({
     }
 }));
 
+// REST
+app.use(postRouter);
+
+// Connect to mongo
 mongoose.connect(
     process.env.MONGO_URL!
 )
