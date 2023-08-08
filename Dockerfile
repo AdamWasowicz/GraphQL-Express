@@ -1,12 +1,31 @@
-FROM node:18-alpine
+FROM node as builder
 
-WORKDIR /src
-COPY .env /src/
-COPY package.json package-lock.json /src/
-RUN npm install --production
+# Create app directory
+WORKDIR /usr/src/app
 
-COPY . /src
+# Install app dependencies
+COPY package*.json ./
+
+RUN npm ci
+
+COPY . .
+
+RUN npm run build
+
+FROM node:slim
+
+ENV NODE_ENV production
+USER node
+
+# Create app directory
+WORKDIR /usr/src/app
+
+# Install app dependencies
+COPY package*.json ./
+
+RUN npm ci --production
+
+COPY --from=builder /usr/src/app/dist ./dist
 
 EXPOSE 8080
-
-CMD ["npm", "start"]
+CMD [ "node", "dist/index.js" ]

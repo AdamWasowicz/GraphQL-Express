@@ -2,31 +2,46 @@ version: '3.8'
 
 services:
   node-app:
+    container_name: "express"
     build:
       context: '.'
       dockerfile: Dockerfile
+    restart: always
+    environment:
+      - APP_PORT=${APP_PORT}
+      - APP_KEY=${APP_KEY}
+      - MONGO_URL=${MONGO_URL}
     ports:
-      - '8080:8080'
+      - '${APP_PORT}:8080'
     volumes:
       - .:/src
       - '/node_modules'
     depends_on:
       - mongodb
     networks:
-      - node-network
+      - backend-network
 
   mongodb:
-    image: mongo:6-jammy
+    container_name: "mongodb"
+    image: mongo:latest
+    restart: always
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root
+      - MONGO_INITDB_DATABASE=express-app
+      - MONGO_INITDB_USER=AdamDev
+      - MONGO_INITDB_PWD=AdamDevPassword
+      - MONGO_AUTH=SCRAM-SHA-256
     ports:
-      - '27017:27017'
+      - '${MONGO_PORT_OUTSIDE}:27017'
     volumes:
-      - dbdata6:/data/db
+          - ./docker/mongodb/init.sh/:/docker-entrypoint-initdb.d/init.sh
+          - mongo-v:/data/db
     networks:
-      - node-network
+      - backend-network
 
 volumes:
-  dbdata6:
+  mongo-v:
 
 networks:
-  node-network:
-    driver: bridge
+  backend-network:

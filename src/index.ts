@@ -43,10 +43,14 @@ app.use('/graphql', graphqlHTTP({
 app.use(postRouter);
 
 // Connect to mongo
-mongoose.connect(
-    process.env.MONGO_URL!
-)
+const mongoUrl = process.env.MONGO_URL!
+mongoose.connect(mongoUrl)
 .then(result => {
-    app.listen(process.env.APP_PORT!);
+    app.listen(8080, '0.0.0.0', () => {
+        console.log('Express working...');
+    });
 })
-.catch(error => console.log(error))
+.catch(error => {
+    console.log(error)
+    console.log(mongoUrl)
+})
