@@ -27,5 +27,8 @@ RUN npm ci --production
 
 COPY --from=builder /usr/src/app/dist ./dist
 
-EXPOSE 8080
+# Expose ports
+ARG APP_EXPOSE_PORT APP_EXPOSE_PORT
+EXPOSE $APP_EXPOSE_PORT
+
 CMD [ "node", "dist/index.js" ]

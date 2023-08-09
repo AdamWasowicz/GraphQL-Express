@@ -85,3 +85,44 @@ export const getPostById: RequestHandler = async (req, res, next) => {
     }
 
 }
+
+export const updatePost: RequestHandler = async (req, res, next) => {
+    try {
+        const postId = req.params.postId;
+        const title = req.body.title;
+        const content = req.body.content;
+
+        const post = await PostModel.findById(postId);
+        if (!post) {
+            const error = new Error('Could not find post');
+            throw error;
+        }
+
+        post.title = title != null && title;
+        post.content = content != null && content;
+
+        const savedPost = await post.save();
+        res.status(200).json({message: 'Post updated', post: savedPost});
+        res.send();
+    }
+    catch (exception) {
+        next(exception);
+    }
+}
+
+export const deletePost: RequestHandler = async (req, res, next) => {
+    try {
+        const postId = req.params.postId;
+        const post = await PostModel.findById(postId);
+        if (!post) {
+            const error = new Error('Could not find post');
+            throw error;
+        }
+
+        const removeResult= await PostModel.findByIdAndRemove(postId);
+        res.status(200).json({message: 'Post removed'});
+    }
+    catch (exception) {
+        next(exception);
+    }
+}
