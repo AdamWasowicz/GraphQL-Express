@@ -1,90 +1,7 @@
-import { GraphQLObjectType, GraphQLString, GraphQLInt, GraphQLInputObjectType, GraphQLID, GraphQLList, GraphQLNonNull, GraphQLBoolean } from "graphql";
+import { GraphQLObjectType, GraphQLString, GraphQLInt, GraphQLInputObjectType, GraphQLID, GraphQLList, GraphQLNonNull } from "graphql";
 
 // Types
-var TestDataType = new GraphQLObjectType({name: 'TestData', fields: {}})
-var RootQueryType = new GraphQLObjectType({name: 'RootQuery',fields: {}})
-var PostType = new GraphQLObjectType({name: 'Post', fields:{}})
-var UserType = new GraphQLObjectType({name: 'User',fields: {}})
-var UserInputType = new GraphQLInputObjectType({name: 'UserInput', fields: {}})
-var RootMutationType = new GraphQLObjectType({name: 'RootMutation', fields: {}});
-var AuthDataType = new GraphQLObjectType({name: 'AuthData', fields: {}})
-var PostInputType = new GraphQLInputObjectType({name: 'PostInput', fields: {}})
-var PostQueryOutputType = new GraphQLObjectType({name: 'PostQueryOutput', fields: {}})
-
-
-
-// Roots
-RootQueryType = new GraphQLObjectType({
-    name: 'RootQuery',
-    fields: {
-        hello: {
-            type: TestDataType,
-            args: {
-                text: { type: GraphQLString },
-                views: { type: GraphQLInt }
-            },
-        },
-
-        login: {
-            type: AuthDataType,
-            args: {
-                email: { type: GraphQLString },
-                password: { type: GraphQLString }
-            }
-        },
-
-        posts: {
-            type: PostQueryOutputType,
-            args: {
-                page: { type: GraphQLInt }
-            }
-        },
-
-        post: {
-            type: PostType,
-            args: {
-                id: { type: GraphQLID }
-            }
-        }
-    }
-})
-
-RootMutationType = new GraphQLObjectType({
-    name: 'RootMutation',
-    fields: {
-        createUser: {
-            type: UserType,
-            args: {
-                userInput: { type: UserInputType}
-            }
-        },
-
-        createPost: {
-            type: PostType,
-            args: {
-                postInput: { type: PostInputType}
-            }
-        },
-
-        updatePost: {
-            type: PostType,
-            args: {
-                id: { type: GraphQLID },
-                postInput: { type: PostInputType }
-            }
-        },
-
-        deletePost: {
-            type: GraphQLBoolean,
-            args: {
-                id: { type: GraphQLID }
-            }
-        }
-    }
-})
-
-// Types
-TestDataType = new GraphQLObjectType({
+export const TestDataType = new GraphQLObjectType({
     name: 'TestData',
     fields: {
         text: { type: GraphQLString },
@@ -92,31 +9,35 @@ TestDataType = new GraphQLObjectType({
     }
 })
 
-UserType = new GraphQLObjectType({
+
+export const UserType = new GraphQLObjectType({
     name: 'User',
-    fields: {
+    fields: () => ({
         _id: { type: GraphQLID },
         name: { type: GraphQLString },
         email: { type: GraphQLString },
         password: { type: GraphQLString },
         status: { type: GraphQLString },
-        posts: { type: GraphQLList(PostType)}
-    }
+        posts: { 
+            type: GraphQLList(PostType),
+            resolve: () => {}
+        }
+    })
 })
 
-PostType = new GraphQLObjectType({
+export const PostType: any = new GraphQLObjectType({
     name: 'Post',
-    fields: {
+    fields: () => ({
         _id: { type: GraphQLID },
         title: { type: GraphQLID },
         content: { type: GraphQLID },
         imageUrl: { type: GraphQLID },
-        creator: { type: GraphQLNonNull(UserType) },
-        createdAt: { type: GraphQLNonNull(UserType) },
-    }
+        creator: { type: UserType },
+        createdAt: { type: UserType },
+    })
 })
 
-UserInputType = new GraphQLInputObjectType({
+export const UserInputType = new GraphQLInputObjectType({
     name: 'UserInput',
     fields: {
         email: { type: GraphQLString },
@@ -125,7 +46,7 @@ UserInputType = new GraphQLInputObjectType({
     }
 })
 
-AuthDataType = new GraphQLObjectType({
+export const AuthDataType = new GraphQLObjectType({
     name: 'AuthData',
     fields: {
         token: { type: GraphQLString },
@@ -133,7 +54,7 @@ AuthDataType = new GraphQLObjectType({
     }
 })
 
-PostInputType = new GraphQLInputObjectType({
+export const PostInputType = new GraphQLInputObjectType({
     name: 'PostInput',
     fields: {
         title: { type: GraphQLString },
@@ -142,16 +63,10 @@ PostInputType = new GraphQLInputObjectType({
     }
 })
 
-PostQueryOutputType = new GraphQLObjectType({
+export const PostQueryOutputType = new GraphQLObjectType({
     name: 'PostQueryOutput',
     fields: {
         posts: { type: GraphQLList(PostType) },
         totalPosts: {type: GraphQLInt }
     }
 })
-
-
-export {
-    RootQueryType,
-    RootMutationType
-};
