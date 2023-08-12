@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-dotenv.config();
+import dotenvExpand from 'dotenv-expand';
 import express, { Express } from 'express';
 import bodyParser from 'body-parser';
 import useDevCORS from "./middleware/use-dev-cors";
@@ -12,11 +12,13 @@ import postRouter from './routes/post';
 import authRouter from './routes/auth';
 import useErrorHandler from "./middleware/use-error-handling";
 
+// Config env
+const envConfig = dotenv.config();
+dotenvExpand.expand(envConfig)
+
 
 const app: Express = express();
-
-
-// Pre-route
+// Services
 app.use(bodyParser.json());
 app.use(useDevCORS);
 app.use(useAuth);
@@ -51,7 +53,8 @@ app.use(authRouter);
 // Middleware
 app.use(useErrorHandler);
 
-
+console.log(process.env.APP_MONGO_URL!)
+console.log(process.env.MONGO_CONTAINER_NAME)
 // Connect to mongo
 mongoose.connect(process.env.APP_MONGO_URL!)
 .then(_ => {
