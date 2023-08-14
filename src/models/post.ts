@@ -7,6 +7,27 @@ export interface Post {
     content: string
 }
 
+
+/**
+ * @openapi
+ * components:
+ *  schemas:
+ *   Post:
+ *    type: object
+ *    properties:
+ *     title:
+ *      type: string
+ *      default: Title
+ *     imageUrl:
+ *      type: string
+ *      default: localhost
+ *     content:
+ *      type: string
+ *      default: Title
+ *     creator:
+ *      type: User
+ *      default: TODO
+ */
 const postSchema = new Schema({
     title: {
         type: String,

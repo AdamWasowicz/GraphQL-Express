@@ -8,6 +8,8 @@ docker compose up
 ```
 
 ## API routes
+Visit '/graphql' for for GraphQL server.
+
 ### GraphQL
 #### Query:
 - <b>hello</b> - for testing
@@ -22,6 +24,8 @@ docker compose up
 - <b>deletePost</b> - delete existing post
 
 ### REST
+Visit '/docs' for opeanapi documentation.
+
 #### Post
 - <b>GET '/post'</b> - get all posts
 - <b>GET '/post/:postId'</b> - get post by id

@@ -1,5 +1,30 @@
 import mongoose, { Schema } from "mongoose";
 
+/**
+ * @openapi
+ *   components:
+ *     schemas:
+ *       User:
+ *         type: object
+ *         properties:
+ *           email:
+ *             type: string
+ *             default: Email
+ *           password:
+ *             type: string
+ *             default: Password
+ *           name:
+ *             type: string
+ *             default: Name
+ *           status:
+ *             type: string
+ *             default: Status
+ *           posts:
+ *              type: array
+ *              items:
+ *                $ref: '#/components/schemas/Post'
+ *
+ */
 const userSchema = new Schema({
     email: {
         type: String,

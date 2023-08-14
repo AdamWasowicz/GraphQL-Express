@@ -11,6 +11,7 @@ import useAuth from "./middleware/use-jwt-auth";
 import postRouter from './routes/post';
 import authRouter from './routes/auth';
 import useErrorHandler from "./middleware/use-error-handling";
+import swaggerDocs from "./utils/swagger";
 
 // Config env
 const envConfig = dotenv.config();
@@ -22,7 +23,6 @@ const app: Express = express();
 app.use(bodyParser.json());
 app.use(useDevCORS);
 app.use(useAuth);
-
 
 //  GraphQL
 app.use('/graphql', graphqlHTTP({
@@ -44,22 +44,30 @@ app.use('/graphql', graphqlHTTP({
     }
 }));
 
-
 // REST
 app.use(postRouter);
 app.use(authRouter);
 
-
 // Middleware
 app.use(useErrorHandler);
 
-console.log(process.env.APP_MONGO_URL!)
-console.log(process.env.MONGO_CONTAINER_NAME)
 // Connect to mongo
+if (process.env.APP_NO_MONGO == 'TRUE') {
+    const appPort = +process.env.APP_PORT_INSIDE!;
+
+    app.listen(appPort, '0.0.0.0', () => {
+        console.log('Express working...');
+        swaggerDocs(app, appPort);
+    });
+}
+
 mongoose.connect(process.env.APP_MONGO_URL!)
 .then(_ => {
-    app.listen(+process.env.APP_PORT_INSIDE!, '0.0.0.0', () => {
+    const appPort = +process.env.APP_PORT_INSIDE!;
+
+    app.listen(appPort, '0.0.0.0', () => {
         console.log('Express working...');
+        swaggerDocs(app, appPort);
     });
 })
 .catch(error => {
